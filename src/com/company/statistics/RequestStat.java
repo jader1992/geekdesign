@@ -9,4 +9,32 @@ public class RequestStat {
     private long count;
     private long tps;
     //...省略getter/setter方法
+
+    public void setMaxResponseTime(double maxResponseTime) {
+        this.maxResponseTime = maxResponseTime;
+    }
+
+    public void setMinResponseTime(double minResponseTime) {
+        this.minResponseTime = minResponseTime;
+    }
+
+    public void setAvgResponseTime(double avgResponseTime) {
+        this.avgResponseTime = avgResponseTime;
+    }
+
+    public void setP999ResponseTime(double p999ResponseTime) {
+        this.p999ResponseTime = p999ResponseTime;
+    }
+
+    public void setP99ResponseTime(double p99ResponseTime) {
+        this.p99ResponseTime = p99ResponseTime;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
+
+    public void setTps(long tps) {
+        this.tps = tps;
+    }
 }

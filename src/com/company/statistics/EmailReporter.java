@@ -6,20 +6,13 @@ public class EmailReporter {
     private static final Long DAY_HOURS_IN_SECONDS = 86400L;
 
     private MetricsStorage metricsStorage;
-    private EmailSender emailSender;
-    private List toAddresses = new ArrayList<>();
+    private Aggregator aggregator;
+    private StatViewer viewer;
 
-    public EmailReporter(MetricsStorage metricsStorage) {
-        this(metricsStorage, new EmailSender());
-    }
-
-    public EmailReporter(MetricsStorage metricsStorage, EmailSender emailSender) {
+    public EmailReporter(MetricsStorage metricsStorage, Aggregator aggregator, StatViewer viewer) {
         this.metricsStorage = metricsStorage;
-        this.emailSender = emailSender;
-    }
-
-    public void addToAddress(String address) {
-        toAddresses.add(address);
+        this.aggregator = aggregator;
+        this.viewer = viewer;
     }
 
     public void startDailyReport() {

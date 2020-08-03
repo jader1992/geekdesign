@@ -8,11 +8,15 @@ import java.util.concurrent.TimeUnit;
 
 public class ConsoleReporter {
     private MetricsStorage metricsStorage;
+    private Aggregator aggregator;
+    private StatViewer viewer;
     private ScheduledExecutorService executor;
 
-    public ConsoleReporter(MetricsStorage metricsStorage) {
+    public ConsoleReporter(MetricsStorage metricsStorage, Aggregator aggregator,StatViewer statViewer) {
         this.metricsStorage = metricsStorage;
         this.executor = Executors.newSingleThreadScheduledExecutor();
+        this.aggregator = aggregator;
+        this.viewer = statViewer;
     }
 
     public void startRepeatedReport(long periodInSeconds, long durationInSeconds) {
@@ -24,19 +28,9 @@ public class ConsoleReporter {
                 long endTimeInMillis = System.currentTimeMillis();
                 long startTimeMIllis = endTimeInMillis - durationInMillis;
                 Map<String, List<RequestInfo>> requestInfos = metricsStorage.getRequestInfos(startTimeMIllis, endTimeInMillis);
-                Map<String, RequestStat> stats = new HashMap<>();
-                for (Map.Entry<String, List<RequestInfo>> entry : requestInfos.entrySet()) {
-                    String apiName = entry.getKey();
-                    List requestInfosPerApi = entry.getValue();
-                    // 第2个代码逻辑：根据原始数据，计算得到统计数据；
-                    RequestStat requestStat = Aggregator.aggregate(requestInfosPerApi, durationInMillis);
-                    stats.put(apiName, requestStat);
-                }
-                // 第3个代码逻辑：将统计数据显示到终端（命令行或邮件）；
-                System.out.println("Time Span: [" + startTimeInMillis + ", " + endTimeInMillis + "]");
-                Gson gson = new Gson();
-                System.out.println(gson.toJson(stats));
+                Map<String, RequestStat> requestStats = aggregator.aggregate(requestInfos, durationInMillis);
+                viewer.output(requestStats, startTimeMIllis, endTimeInMillis);
             }
-        }, 0, periodInSeconds, TimeUnit.SECONDS);
+        }, 0L, periodInSeconds, TimeUnit.SECONDS);
     }
 }
