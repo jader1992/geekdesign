@@ -6,17 +6,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ConsoleReporter {
+public class ConsoleReporter extends ScheduledReporter{
     private MetricsStorage metricsStorage;
     private Aggregator aggregator;
     private StatViewer viewer;
     private ScheduledExecutorService executor;
 
+    // 兼顾代码的易用性，新增一个封装了默认依赖的构造函数
+    public ConsoleReporter() {
+        this(new RedisMetricsStorage(), new Aggregator(), new ConsoleViewer());
+    }
+
     public ConsoleReporter(MetricsStorage metricsStorage, Aggregator aggregator,StatViewer statViewer) {
-        this.metricsStorage = metricsStorage;
+        super(metricsStorage, aggregator, statViewer);
         this.executor = Executors.newSingleThreadScheduledExecutor();
-        this.aggregator = aggregator;
-        this.viewer = statViewer;
     }
 
     public void startRepeatedReport(long periodInSeconds, long durationInSeconds) {

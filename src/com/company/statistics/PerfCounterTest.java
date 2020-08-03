@@ -2,11 +2,8 @@ package com.company.statistics;
 
 public class PerfCounterTest {
     public static void main(String[] args) {
-        MetricsStorage storage = new RedisMetricsStorage();
-        Aggregator aggregator = new Aggregator();
-        ConsoleViewer consoleViewer = new ConsoleViewer();
-        ConsoleReporter consoleReporter = new ConsoleReporter(storage, aggregator, ConsoleViewer);
-        consoleReporter.startRepeatedReport(60,60);
+        ConsoleReporter consoleReporter = new ConsoleReporter();
+        consoleReporter.startRepeatedReport(60, 60);
 
         //定时触发统计并将结果输出到邮件
         EmailViewer emailViewer = new EmailViewer();
